@@ -67,7 +67,7 @@ public class Sdg {
 			
 			
 		
-			int num_of_game=10;
+			int num_of_game=1000;
 			int players_per_team=6;
 			String[][][] game= new String [num_of_game][players_per_team+1][4];//6 player per team, 7th row is score
 			
@@ -113,7 +113,7 @@ public class Sdg {
 			
 			
 			
-			 String csv = "data.csv";
+			 String csv = "game_stances.csv";
 		     CSVWriter writer = new CSVWriter(new FileWriter(csv));
 		      //Write the record to file
 		     for (int k=0;k<num_of_game;k++){//each game

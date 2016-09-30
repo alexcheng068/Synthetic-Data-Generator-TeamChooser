@@ -68,17 +68,14 @@ public class Sdg {
 
 			int max_players_per_team=8;
 			int min_players_per_team=4;
-			int num_of_game=1000;
-
+			int num_of_game=2000;
 			int players_per_team;
-
-
-
-
 
 			//output file set up
 			String csv = "game_instances.csv";
+			String dbcsv= "game_instances_db.csv";
 			CSVWriter writer = new CSVWriter(new FileWriter(csv));
+			CSVWriter writerDB = new CSVWriter(new FileWriter(dbcsv));
 
 			//fill game
 			for (int k=0;k<num_of_game;k++){//each game
@@ -90,7 +87,7 @@ public class Sdg {
 				players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
 				System.out.println("player per team"+players_per_team);
 				String[][] game= new String [players_per_team+1][4];//6 player per team, 7th row is score
-
+				
 				for (int p_count=0;p_count<players_per_team;p_count++){
 					game[p_count][0]=name_rating_tmp[p_count][0];
 					game[p_count][1]=name_rating_tmp[p_count][1];
@@ -138,22 +135,31 @@ public class Sdg {
 				}
 				String [] blank = "".split(",");
 				writer.writeNext(blank);
-
+				
+				//output to DB file
+				
+				for ( int m=0; m < players_per_team; m++) {
+					String [] gameStringDB = new String[7];
+					for (int j=0;j<4;j++){
+						gameStringDB[0]=String.valueOf(k+1);
+						gameStringDB[1]=game[m][0];
+						gameStringDB[2]=game[m][1];
+						gameStringDB[3]=game[players_per_team][1];
+						gameStringDB[4]=game[m][2];
+						gameStringDB[5]=game[m][3];
+						gameStringDB[6]=game[players_per_team][3];
+					}
+					writerDB.writeNext(gameStringDB);
+				}
+				
+				
 
 
 			}//end of for loop for each game
 
-
-
-
-
-
-
 			//close the writer
 			writer.close();
-
-
-
+			writerDB.close();
 
 
 		} catch (FileNotFoundException e) {

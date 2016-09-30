@@ -79,6 +79,7 @@ public class Sdg {
 
 			//fill game
 			for (int k=0;k<num_of_game;k++){//each game
+				System.out.println("game num is "+(k+1));
 				sa.ShuffleArray(name_rating_tmp);
 				double sumA=0;
 				double sumB=0;	
@@ -87,14 +88,32 @@ public class Sdg {
 				players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
 				System.out.println("player per team"+players_per_team);
 				String[][] game= new String [players_per_team+1][4];//6 player per team, 7th row is score
-				
+				//decide whether odd numbers of players
+				//probability is 0.25 
+				boolean odd=false;
+				if(players_per_team!=min_players_per_team){
+					int odd_rand=rand.nextInt(4)+1;//from 1-4
+					System.out.println("oddrand is "+odd_rand);
+					if(odd_rand==1){
+						odd=true;
+					}
+				}
+				System.out.println("odd is "+odd);
 				for (int p_count=0;p_count<players_per_team;p_count++){
 					game[p_count][0]=name_rating_tmp[p_count][0];
 					game[p_count][1]=name_rating_tmp[p_count][1];
-					game[p_count][2]=name_rating_tmp[p_count+players_per_team][0];
-					game[p_count][3]=name_rating_tmp[p_count+players_per_team][1];
+				
+					if(p_count==players_per_team-1 && odd==true){
+						game[p_count][2]="";
+						game[p_count][3]="";
+					}
+					else{
+						game[p_count][2]=name_rating_tmp[p_count+players_per_team][0];
+						game[p_count][3]=name_rating_tmp[p_count+players_per_team][1];		
+						sumB=sumB+ Double.parseDouble(game[p_count][3]);
+					}
 					sumA=sumA+ Double.parseDouble(game[p_count][1]);
-					sumB=sumB+ Double.parseDouble(game[p_count][3]);
+					
 				}
 				double avgA=sumA/players_per_team;
 				double avgB=sumB/players_per_team;
@@ -147,13 +166,16 @@ public class Sdg {
 						gameStringDB[3]=game[players_per_team][1];
 						gameStringDB[4]=game[m][2];
 						gameStringDB[5]=game[m][3];
-						gameStringDB[6]=game[players_per_team][3];
+						if (gameStringDB[5]=="")
+							gameStringDB[6]="";
+						else
+							gameStringDB[6]=game[players_per_team][3];
 					}
 					writerDB.writeNext(gameStringDB);
 				}
 				
 				
-
+				System.out.println(" ");
 
 			}//end of for loop for each game
 

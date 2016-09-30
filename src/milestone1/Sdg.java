@@ -70,6 +70,8 @@ public class Sdg {
 			int min_players_per_team=4;
 			int num_of_game=2000;
 			int players_per_team;
+			int totalscore=0;
+			double avgscore=0;
 
 			//output file set up
 			String csv = "game_instances.csv";
@@ -128,13 +130,15 @@ public class Sdg {
 					int score = Integer.valueOf(L.intValue());				
 					game[players_per_team][1]=String.valueOf(score);
 					game[players_per_team][3]="0";
+					totalscore+=score;
 				}
 				else{
 					double diff=(avgB-avgA)*2;
 					Long L = Math.round(diff);
 					int score = Integer.valueOf(L.intValue());				
 					game[players_per_team][3]=String.valueOf(score);
-					game[players_per_team][1]="0";						
+					game[players_per_team][1]="0";
+					totalscore+=score;
 				}
 				game[players_per_team][0]="Score";
 
@@ -174,10 +178,14 @@ public class Sdg {
 					writerDB.writeNext(gameStringDB);
 				}
 				
-				
-				System.out.println(" ");
+				System.out.println("");
 
 			}//end of for loop for each game
+			
+			
+			avgscore=(double)totalscore/(double)num_of_game;
+			System.out.println("totoal score: "+totalscore);
+			System.out.println("avgscore: "+avgscore);
 
 			//close the writer
 			writer.close();

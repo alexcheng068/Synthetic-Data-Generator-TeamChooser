@@ -64,7 +64,10 @@ public class Sdg {
 				//System.out.println(name_rating_tmp[i-1][0]+"  "+name_rating_tmp[i-1][1]);
 			}
 
-
+			int [] score_count= new int [10];
+			for (i=0;i<10;i++){//initualize  
+				score_count[i]=0;
+			}
 
 			int max_players_per_team=8;
 			int min_players_per_team=4;
@@ -104,7 +107,7 @@ public class Sdg {
 				for (int p_count=0;p_count<players_per_team;p_count++){
 					game[p_count][0]=name_rating_tmp[p_count][0];
 					game[p_count][1]=name_rating_tmp[p_count][1];
-				
+
 					if(p_count==players_per_team-1 && odd==true){
 						game[p_count][2]="";
 						game[p_count][3]="";
@@ -115,7 +118,7 @@ public class Sdg {
 						sumB=sumB+ Double.parseDouble(game[p_count][3]);
 					}
 					sumA=sumA+ Double.parseDouble(game[p_count][1]);
-					
+
 				}
 				double avgA=sumA/players_per_team;
 				double avgB=sumB/players_per_team;
@@ -123,6 +126,8 @@ public class Sdg {
 				if (avgA==avgB){
 					game[players_per_team][3]="0";
 					game[players_per_team][1]="0";
+					score_count[0]=score_count[0]+1;
+
 				}
 				else if (avgA>avgB){
 					double diff=(avgA-avgB)*2;
@@ -131,6 +136,8 @@ public class Sdg {
 					game[players_per_team][1]=String.valueOf(score);
 					game[players_per_team][3]="0";
 					totalscore+=score;
+					score_count[score]=score_count[score]+1;
+					System.out.println("score scount is "+score_count[score]);
 				}
 				else{
 					double diff=(avgB-avgA)*2;
@@ -139,6 +146,7 @@ public class Sdg {
 					game[players_per_team][3]=String.valueOf(score);
 					game[players_per_team][1]="0";
 					totalscore+=score;
+					score_count[score]=score_count[score]+1;
 				}
 				game[players_per_team][0]="Score";
 
@@ -158,9 +166,9 @@ public class Sdg {
 				}
 				String [] blank = "".split(",");
 				writer.writeNext(blank);
-				
+
 				//output to DB file
-				
+
 				for ( int m=0; m < players_per_team; m++) {
 					String [] gameStringDB = new String[7];
 					for (int j=0;j<4;j++){
@@ -177,15 +185,21 @@ public class Sdg {
 					}
 					writerDB.writeNext(gameStringDB);
 				}
-				
+
 				System.out.println("");
 
 			}//end of for loop for each game
-			
-			
+
+
 			avgscore=(double)totalscore/(double)num_of_game;
 			System.out.println("totoal score: "+totalscore);
 			System.out.println("avgscore: "+avgscore);
+			System.out.println("score distribution is :");
+			for (i=0;i<10;i++){
+				double score_dis= (double)score_count[i]*100/(double)num_of_game;
+				System.out.println("score diff "+i+" is "+score_dis +"%");
+			}
+
 
 			//close the writer
 			writer.close();

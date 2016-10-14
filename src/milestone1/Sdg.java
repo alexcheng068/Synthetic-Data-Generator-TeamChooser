@@ -86,11 +86,40 @@ public class Sdg {
 			String dbcsv= "game_instances_db.csv";
 			CSVWriter writer = new CSVWriter(new FileWriter(csv));
 			CSVWriter writerDB = new CSVWriter(new FileWriter(dbcsv));
-
+			players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
 			//fill game
 			for (int k=0;k<num_of_game;k++){//each game
 				System.out.println("game num is "+(k+1));
-				sa.ShuffleArray(name_rating_tmp);
+				boolean offdefBalance=false;
+				String off="Off";
+				String def="Def";
+				while ( offdefBalance==false){
+					int offA=0, offB=0,defA=0,defB=0;
+					offdefBalance=true;
+					sa.ShuffleArray(name_rating_tmp);
+					for (int countoff=0;countoff<players_per_team;countoff++){				
+						if(off.equals(name_rating_tmp[countoff][2]))
+							offA++;
+						else if (def.equals(name_rating_tmp[countoff][2]))
+							defA++;
+					}
+					if (Math.abs(offA-defA)>2)
+						offdefBalance=false;
+					for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
+						if(off.equals(name_rating_tmp[countoff][2]))
+							offB++;
+						else if (def.equals(name_rating_tmp[countoff][2]))
+							defB++;
+					}
+					if (Math.abs(offB-defB)>1){
+						
+						offdefBalance=false;
+					}
+					System.out.println("off diff B " +offB+"def B " +defB);
+					System.out.println("off diff A " +offA+"def A " +defA);
+
+				}
+				//sa.ShuffleArray(name_rating_tmp);
 				double sumA=0;
 				double sumB=0;	
 				//generate number of players for each game	
@@ -131,7 +160,8 @@ public class Sdg {
 				double avgA=sumA/players_per_team;
 				double avgB=sumB/players_per_team;
 				System.out.println("avg a is "+avgA+" avg b is "+avgB);
-				if (avgA==avgB){
+				double diffAB=Math.abs(avgA-avgB);
+				if (avgA==avgB || diffAB<0.27){
 					game[players_per_team][5]="0";
 					game[players_per_team][2]="0";
 					score_count[0]=score_count[0]+1;
@@ -139,6 +169,9 @@ public class Sdg {
 				}
 				else if (avgA>avgB){
 					double diff=(avgA-avgB)*2;
+					if (1.5 <diff && diff <1.75){
+						diff=1.4;
+					}
 					Long L = Math.round(diff);
 					int score = Integer.valueOf(L.intValue());				
 					game[players_per_team][2]=String.valueOf(score);
@@ -149,6 +182,9 @@ public class Sdg {
 				}
 				else{
 					double diff=(avgB-avgA)*2;
+					if (1.5 <diff && diff <1.7){
+						diff=1.4;
+					}
 					Long L = Math.round(diff);
 					int score = Integer.valueOf(L.intValue());				
 					game[players_per_team][5]=String.valueOf(score);
@@ -173,10 +209,10 @@ public class Sdg {
 				gameTitle[5]="Rating";
 				writer.writeNext(gameTitle);
 				for ( int m=0; m < players_per_team+1; m++) {
-					
 
-					
-					
+
+
+
 					String [] gameString = new String[6];
 					for (int j=0;j<6;j++){
 						gameString[j]=game[m][j];

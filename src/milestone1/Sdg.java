@@ -93,6 +93,11 @@ public class Sdg {
 				boolean offdefBalance=false;
 				String off="Off";
 				String def="Def";
+				
+				
+				//generate number of players for each game	
+				//Min + (int)(Math.random() * ((Max - Min) + 1))
+				players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
 				while ( offdefBalance==false){
 					int offA=0, offB=0,defA=0,defB=0;
 					offdefBalance=true;
@@ -103,7 +108,7 @@ public class Sdg {
 						else if (def.equals(name_rating_tmp[countoff][2]))
 							defA++;
 					}
-					if (Math.abs(offA-defA)>2)
+					if (Math.abs(offA-defA)>1)
 						offdefBalance=false;
 					for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
 						if(off.equals(name_rating_tmp[countoff][2]))
@@ -115,16 +120,14 @@ public class Sdg {
 						
 						offdefBalance=false;
 					}
-					System.out.println("off diff B " +offB+"def B " +defB);
-					System.out.println("off diff A " +offA+"def A " +defA);
-
+					System.out.println("off diff B " +offB+" def B " +defB);
+					System.out.println("off diff A " +offA+" def A " +defA);
+ 
 				}
 				//sa.ShuffleArray(name_rating_tmp);
 				double sumA=0;
 				double sumB=0;	
-				//generate number of players for each game	
-				//Min + (int)(Math.random() * ((Max - Min) + 1))
-				players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
+				
 				System.out.println("player per team"+players_per_team);
 				String[][] game= new String [players_per_team+1][6];//6 player per team, 7th row is score
 				//decide whether odd numbers of players

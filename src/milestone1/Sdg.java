@@ -87,59 +87,69 @@ public class Sdg {
 			CSVWriter writer = new CSVWriter(new FileWriter(csv));
 			CSVWriter writerDB = new CSVWriter(new FileWriter(dbcsv));
 			players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
-			//fill game
+			boolean odd=false;
+			//fill game	
 			for (int k=0;k<num_of_game;k++){//each game
 				System.out.println("game num is "+(k+1));
 				boolean offdefBalance=false;
 				String off="Off";
 				String def="Def";
+
 				
-				
-				//generate number of players for each game	
-				//Min + (int)(Math.random() * ((Max - Min) + 1))
-				players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
-				while ( offdefBalance==false){
-					int offA=0, offB=0,defA=0,defB=0;
-					offdefBalance=true;
-					sa.ShuffleArray(name_rating_tmp);
-					for (int countoff=0;countoff<players_per_team;countoff++){				
-						if(off.equals(name_rating_tmp[countoff][2]))
-							offA++;
-						else if (def.equals(name_rating_tmp[countoff][2]))
-							defA++;
+		
+				if (k%2==0){
+					//generate number of players for each game	
+					//Min + (int)(Math.random() * ((Max - Min) + 1))
+					players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
+					while ( offdefBalance==false){
+						int offA=0, offB=0,defA=0,defB=0;
+						offdefBalance=true;
+						sa.ShuffleArray(name_rating_tmp);
+						for (int countoff=0;countoff<players_per_team;countoff++){				
+							if(off.equals(name_rating_tmp[countoff][2]))
+								offA++;
+							else if (def.equals(name_rating_tmp[countoff][2]))
+								defA++;
+						}
+						if (Math.abs(offA-defA)>1)
+							offdefBalance=false;
+						for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
+							if(off.equals(name_rating_tmp[countoff][2]))
+								offB++;
+							else if (def.equals(name_rating_tmp[countoff][2]))
+								defB++;
+						}
+						if (Math.abs(offB-defB)>1){
+
+							offdefBalance=false;
+						}
+						System.out.println("off diff B " +offB+" def B " +defB);
+						System.out.println("off diff A " +offA+" def A " +defA);
+
 					}
-					if (Math.abs(offA-defA)>1)
-						offdefBalance=false;
-					for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
-						if(off.equals(name_rating_tmp[countoff][2]))
-							offB++;
-						else if (def.equals(name_rating_tmp[countoff][2]))
-							defB++;
+					
+					
+					//decide whether odd numbers of players
+					//probability is 0.25 
+					odd=false;
+					if(players_per_team!=min_players_per_team){
+						int odd_rand=rand.nextInt(4)+1;//from 1-4
+						System.out.println("oddrand is "+odd_rand);
+						if(odd_rand==1){
+							odd=true;
+						}
 					}
-					if (Math.abs(offB-defB)>1){
-						
-						offdefBalance=false;
-					}
-					System.out.println("off diff B " +offB+" def B " +defB);
-					System.out.println("off diff A " +offA+" def A " +defA);
- 
+	
+					
 				}
 				//sa.ShuffleArray(name_rating_tmp);
 				double sumA=0;
 				double sumB=0;	
-				
+
 				System.out.println("player per team"+players_per_team);
 				String[][] game= new String [players_per_team+1][6];//6 player per team, 7th row is score
-				//decide whether odd numbers of players
-				//probability is 0.25 
-				boolean odd=false;
-				if(players_per_team!=min_players_per_team){
-					int odd_rand=rand.nextInt(4)+1;//from 1-4
-					System.out.println("oddrand is "+odd_rand);
-					if(odd_rand==1){
-						odd=true;
-					}
-				}
+
+
 				System.out.println("odd is "+odd);
 				for (int p_count=0;p_count<players_per_team;p_count++){
 					game[p_count][0]=name_rating_tmp[p_count][0];
@@ -163,6 +173,13 @@ public class Sdg {
 				double avgA=sumA/players_per_team;
 				double avgB=sumB/players_per_team;
 				System.out.println("avg a is "+avgA+" avg b is "+avgB);
+				double diff_offset=0;
+				if (k%2==0){
+					diff_offset=rand.nextDouble()*2-1;
+					avgA=avgA+diff_offset;
+					System.out.println("diff_offset  a is "+avgA);
+				}
+				System.out.println("ajusted avg a is "+avgA+" avg b is "+avgB);
 				double diffAB=Math.abs(avgA-avgB);
 				if (avgA==avgB || diffAB<0.27){
 					game[players_per_team][5]="0";
@@ -185,7 +202,7 @@ public class Sdg {
 				}
 				else{
 					double diff=(avgB-avgA)*2;
-					if (1.5 <diff && diff <1.7){
+					if (1.5 <diff && diff <1.75){
 						diff=1.4;
 					}
 					Long L = Math.round(diff);

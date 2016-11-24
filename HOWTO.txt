@@ -1,0 +1,7 @@
+This is instruction is for running on terminal
+
+cd /SDG/bin
+
+java -cp .: "..path to.." /SDG/opencsv-3.8.jar milestone1.Sdg
+
+new files will be generated in this folder

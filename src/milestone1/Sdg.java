@@ -31,6 +31,31 @@ public class Sdg {
 			array[i][2] =temp2;
 		}
 	}
+	
+	
+	private  void splitTeam(String[][] array)
+	{
+		String  temp0, temp1,temp2;
+		int index;
+		Random random = new Random();
+		for (int i = array.length - 1; i > 0; i--)
+		{
+			index = random.nextInt(i + 1);
+			temp0 = array[index][0];
+			temp1 = array[index][1];
+			temp2 = array[index][2];
+			array[index][0] = array[i][0];
+			array[index][1] = array[i][1];
+			array[index][2] = array[i][2];   
+			array[i][0] = temp0;
+			array[i][1] =temp1;
+			array[i][2] =temp2;
+		}
+	}
+	
+	
+	
+	
 
 
 	public static void main(String[] args) {
@@ -96,11 +121,15 @@ public class Sdg {
 				String def="Def";
 
 				
-		
+				//generate set game instance per set of play
 				if (k%2==0){
 					//generate number of players for each game	
 					//Min + (int)(Math.random() * ((Max - Min) + 1))
 					players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
+					String[][] splitarray= new String[players_per_team][3];
+					
+					//off and def balance
+					
 					while ( offdefBalance==false){
 						int offA=0, offB=0,defA=0,defB=0;
 						offdefBalance=true;
@@ -129,6 +158,7 @@ public class Sdg {
 					}
 					
 					
+					
 					//decide whether odd numbers of players
 					//probability is 0.25 
 					odd=false;
@@ -139,6 +169,9 @@ public class Sdg {
 							odd=true;
 						}
 					}
+					
+					
+					
 	
 					
 				}
@@ -149,7 +182,7 @@ public class Sdg {
 				System.out.println("player per team"+players_per_team);
 				String[][] game= new String [players_per_team+1][6];//6 player per team, 7th row is score
 
-
+				//fill game
 				System.out.println("odd is "+odd);
 				for (int p_count=0;p_count<players_per_team;p_count++){
 					game[p_count][0]=name_rating_tmp[p_count][0];

@@ -31,31 +31,107 @@ public class Sdg {
 			array[i][2] =temp2;
 		}
 	}
-	
-	
-	private  void splitTeam(String[][] array)
+
+
+	private  String[][] splitTeam(String[][] array,int players_per_team,boolean odd)
 	{
-		String  temp0, temp1,temp2;
-		int index;
-		Random random = new Random();
-		for (int i = array.length - 1; i > 0; i--)
-		{
-			index = random.nextInt(i + 1);
-			temp0 = array[index][0];
-			temp1 = array[index][1];
-			temp2 = array[index][2];
-			array[index][0] = array[i][0];
-			array[index][1] = array[i][1];
-			array[index][2] = array[i][2];   
-			array[i][0] = temp0;
-			array[i][1] =temp1;
-			array[i][2] =temp2;
+
+		//array[0] name,
+		//array[1] rating
+		//array[2] def off
+		String[][] array_with_number= new String [players_per_team*2][3];
+		String middlename="";// when odd
+		String middlerating="";// when odd
+		String middlePos="";// when odd
+		int middle=players_per_team-1;
+		for (int i=0; i<players_per_team*2;i++){
+			array_with_number[i][0]=array[i][0];
+			array_with_number[i][1]=array[i][1];
+			array_with_number[i][2]=array[i][2];
 		}
+		array_with_number=sort(array_with_number,players_per_team);
+		if (odd){
+			middlename=array_with_number[middle][0];
+			middlerating=array_with_number[middle][1];
+			middlePos=array_with_number[middle][2];
+			shiftToMiddle(array_with_number,players_per_team);		
+		}
+
+
+		String[][] game= new String [players_per_team+1][6];
+		//game [0] name A, [1] def off ,[2] rating, [3] name B, [4] def off, [5] rating
+
+		//fill game
+		int pcount=0;
+		for (int j=0;j<players_per_team*2;j++){
+			
+			if (j%2==0 && pcount%2==0){// team A, odd , 1st
+				game[pcount][0]=array_with_number[j][0];//name
+				game[pcount][1]=array_with_number[j][2];//off def
+				game[pcount][2]=array_with_number[j][1];//rating
+			}
+			else if (j%2==1 && pcount%2==0){// team B odd, 2nd
+				game[pcount][3]=array_with_number[j][0];//name
+				game[pcount][4]=array_with_number[j][2];//off def
+				game[pcount][5]=array_with_number[j][1];//rating
+				pcount++;
+			}
+			else if (j%2==0 && pcount%2==1){// team B even, 3rd
+				game[pcount][3]=array_with_number[j][0];//name
+				game[pcount][4]=array_with_number[j][2];//off def
+				game[pcount][5]=array_with_number[j][1];//rating
+			}
+			else//  team A, even , 4th
+			{
+				game[pcount][0]=array_with_number[j][0];//name
+				game[pcount][1]=array_with_number[j][2];//off def
+				game[pcount][2]=array_with_number[j][1];//rating
+				pcount++;
+			}
+
+
+		}
+
+
+
+		return game;
 	}
-	
-	
-	
-	
+
+	private String[][] sort(String[][] array, int players_per_team){//bubble sort lol
+		int n = players_per_team*2;
+		String temp0="";
+		String temp1="";
+		String temp2="";
+		for (int i = 0; i < n; i++) {
+			for (int j = 1; j < (n - i); j++) {
+				if (Double.parseDouble(array[j - 1][1]) < Double.parseDouble(array[j][1])) {
+					temp0 = array[j - 1][0];
+					temp1 = array[j - 1][1];
+					temp2 = array[j - 1][2];
+					array[j - 1][0] = array[j][0];
+					array[j - 1][1] = array[j][1];
+					array[j - 1][2] = array[j][2];
+					array[j][0] = temp0;
+					array[j][1] = temp1;
+					array[j][2] = temp2;
+				}
+
+			}
+		}
+		return array;
+	}
+
+	private void shiftToMiddle(String[][] array, int players_per_team){
+		for (int i=players_per_team; i<(players_per_team*2)-1;i++){
+			array[i - 1][0]=array[i][0];
+			array[i - 1][1]=array[i][1];
+			array[i - 1][2]=array[i][2];
+		}
+
+
+	}
+
+
 
 
 	public static void main(String[] args) {
@@ -88,9 +164,9 @@ public class Sdg {
 
 			String[][] name_rating_tmp= new String[count-1][3];
 			for(i=1;i<count;i++){
-				name_rating_tmp[i-1][0]=name_rating[i][0];
-				name_rating_tmp[i-1][1]=name_rating[i][1];
-				name_rating_tmp[i-1][2]=name_rating[i][2];
+				name_rating_tmp[i-1][0]=name_rating[i][0];//name
+				name_rating_tmp[i-1][1]=name_rating[i][1];//rating
+				name_rating_tmp[i-1][2]=name_rating[i][2];//off def
 				//System.out.println(name_rating_tmp[i-1][0]+"  "+name_rating_tmp[i-1][1]);
 			}
 
@@ -120,45 +196,45 @@ public class Sdg {
 				String off="Off";
 				String def="Def";
 
-				
+
 				//generate set game instance per set of play
 				if (k%2==0){
 					//generate number of players for each game	
 					//Min + (int)(Math.random() * ((Max - Min) + 1))
 					players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
 					String[][] splitarray= new String[players_per_team][3];
-					
+
 					//off and def balance
-					
-					while ( offdefBalance==false){
-						int offA=0, offB=0,defA=0,defB=0;
-						offdefBalance=true;
-						sa.ShuffleArray(name_rating_tmp);
-						for (int countoff=0;countoff<players_per_team;countoff++){				
-							if(off.equals(name_rating_tmp[countoff][2]))
-								offA++;
-							else if (def.equals(name_rating_tmp[countoff][2]))
-								defA++;
-						}
-						if (Math.abs(offA-defA)>1)
-							offdefBalance=false;
-						for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
-							if(off.equals(name_rating_tmp[countoff][2]))
-								offB++;
-							else if (def.equals(name_rating_tmp[countoff][2]))
-								defB++;
-						}
-						if (Math.abs(offB-defB)>1){
 
-							offdefBalance=false;
-						}
-						System.out.println("off diff B " +offB+" def B " +defB);
-						System.out.println("off diff A " +offA+" def A " +defA);
+					//					while ( offdefBalance==false){
+					//						int offA=0, offB=0,defA=0,defB=0;
+					//						offdefBalance=true;
+					//						sa.ShuffleArray(name_rating_tmp);
+					//						for (int countoff=0;countoff<players_per_team;countoff++){				
+					//							if(off.equals(name_rating_tmp[countoff][2]))
+					//								offA++;
+					//							else if (def.equals(name_rating_tmp[countoff][2]))
+					//								defA++;
+					//						}
+					//						if (Math.abs(offA-defA)>1)
+					//							offdefBalance=false;
+					//						for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
+					//							if(off.equals(name_rating_tmp[countoff][2]))
+					//								offB++;
+					//							else if (def.equals(name_rating_tmp[countoff][2]))
+					//								defB++;
+					//						}
+					//						if (Math.abs(offB-defB)>1){
+					//
+					//							offdefBalance=false;
+					//						}
+					//						System.out.println("off diff B " +offB+" def B " +defB);
+					//						System.out.println("off diff A " +offA+" def A " +defA);
+					//
+					//					}
 
-					}
-					
-					
-					
+
+
 					//decide whether odd numbers of players
 					//probability is 0.25 
 					odd=false;
@@ -169,40 +245,47 @@ public class Sdg {
 							odd=true;
 						}
 					}
-					
-					
-					
-	
-					
+
+
+
+
+
 				}
-				//sa.ShuffleArray(name_rating_tmp);
+				sa.ShuffleArray(name_rating_tmp);
 				double sumA=0;
 				double sumB=0;	
 
 				System.out.println("player per team"+players_per_team);
-				String[][] game= new String [players_per_team+1][6];//6 player per team, 7th row is score
+				String[][] game= new String [players_per_team+1][6];//players_per_team+1 th row is score
+
+				game=sa.splitTeam(name_rating_tmp,players_per_team,odd);
+
 
 				//fill game
 				System.out.println("odd is "+odd);
-				for (int p_count=0;p_count<players_per_team;p_count++){
-					game[p_count][0]=name_rating_tmp[p_count][0];
-					game[p_count][1]=name_rating_tmp[p_count][2];
-					game[p_count][2]=name_rating_tmp[p_count][1];
-
-					if(p_count==players_per_team-1 && odd==true){
-						game[p_count][3]="";
-						game[p_count][4]="";
-						game[p_count][5]="";
-					}
-					else{
-						game[p_count][3]=name_rating_tmp[p_count+players_per_team][0];
-						game[p_count][4]=name_rating_tmp[p_count+players_per_team][2];
-						game[p_count][5]=name_rating_tmp[p_count+players_per_team][1];	
-						sumB=sumB+ Double.parseDouble(game[p_count][5]);
-					}
-					sumA=sumA+ Double.parseDouble(game[p_count][2]);
-
-				}
+//				for (int p_count=0;p_count<players_per_team;p_count++){
+//					game[p_count][0]=name_rating_tmp[p_count][0];//name
+//					game[p_count][1]=name_rating_tmp[p_count][2];//off def
+//					game[p_count][2]=name_rating_tmp[p_count][1];//rating
+//
+//					if(p_count==players_per_team-1 && odd==true){
+//						game[p_count][3]="";
+//						game[p_count][4]="";
+//						game[p_count][5]="";
+//					}
+//					else{
+//						game[p_count][3]=name_rating_tmp[p_count+players_per_team][0];
+//						game[p_count][4]=name_rating_tmp[p_count+players_per_team][2];
+//						game[p_count][5]=name_rating_tmp[p_count+players_per_team][1];	
+//						sumB=sumB+ Double.parseDouble(game[p_count][5]);
+//					}
+//					sumA=sumA+ Double.parseDouble(game[p_count][2]);
+//
+//				}
+				
+				sumA=10;
+				sumB=10;
+				
 				double avgA=sumA/players_per_team;
 				double avgB=sumB/players_per_team;
 				System.out.println("avg a is "+avgA+" avg b is "+avgB);

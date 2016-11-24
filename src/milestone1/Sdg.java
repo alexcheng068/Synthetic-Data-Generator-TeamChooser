@@ -49,6 +49,11 @@ public class Sdg {
 			array_with_number[i][1]=array[i][1];
 			array_with_number[i][2]=array[i][2];
 		}
+		if(odd){
+			array_with_number[players_per_team*2-1][0]="";
+			array_with_number[players_per_team*2-1][1]="";
+			array_with_number[players_per_team*2-1][2]="";
+		}
 		array_with_number=sort(array_with_number,players_per_team);
 		if (odd){
 			middlename=array_with_number[middle][0];
@@ -121,8 +126,8 @@ public class Sdg {
 		return array;
 	}
 
-	private void shiftToMiddle(String[][] array, int players_per_team){
-		for (int i=players_per_team; i<(players_per_team*2)-1;i++){
+	private void shiftToMiddle(String[][] array, int players_per_team){//in case of odd number
+		for (int i=players_per_team; i<(players_per_team*2);i++){
 			array[i - 1][0]=array[i][0];
 			array[i - 1][1]=array[i][1];
 			array[i - 1][2]=array[i][2];
@@ -242,7 +247,7 @@ public class Sdg {
 						int odd_rand=rand.nextInt(4)+1;//from 1-4
 						System.out.println("oddrand is "+odd_rand);
 						if(odd_rand==1){
-							odd=true;
+						//	odd=true;
 						}
 					}
 
@@ -283,8 +288,18 @@ public class Sdg {
 //
 //				}
 				
-				sumA=10;
-				sumB=10;
+				
+				
+				
+				
+				
+				
+				for (int counter=0;counter<players_per_team;counter++){
+					sumA=sumA+Double.parseDouble(game[counter][2]);
+					sumB=sumB+Double.parseDouble(game[counter][5]);
+				}
+				
+
 				
 				double avgA=sumA/players_per_team;
 				double avgB=sumB/players_per_team;

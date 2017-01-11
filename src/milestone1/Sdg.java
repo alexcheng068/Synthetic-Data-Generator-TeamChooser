@@ -162,8 +162,8 @@ public class Sdg {
 		
 	}
 
-	private String[][] gaussianRating(String [][] game){ 
-	
+	private String[][] gaussianRating(String [][] game, int players_per_team){ 
+		Random rand=new Random();
 	/*				
 	int rating_offset=rand.nextInt(3)+1;
 	System.out.println("rating_offset is "+ rating_offset);
@@ -173,7 +173,18 @@ public class Sdg {
 	//name_rating_tmp[player_offet][1]=Integer.toString((Integer.parseInt(name_rating_tmp[player_offet][1])-(rating_offset)));
 	System.out.println("name_rating_tmp[player_offet][1] 22"+ name_rating_tmp[player_offet][1]);
 	*/
-		
+		//team A
+		for (int i=0;i<players_per_team;i++){	
+			double rating_offset=rand.nextGaussian()*1.281552;//80% will be within -1 to 1
+			rating_offset=(double)Math.round(rating_offset * 10d) / 10d;
+			game[i][2]=Double.toString((Double.parseDouble(game[i][2])+(rating_offset))); 
+		}
+		//team B
+		for (int i=0;i<players_per_team;i++){	
+			double rating_offset=rand.nextGaussian()*1.281552;//80% will be within -1 to 1
+			rating_offset=(double)Math.round(rating_offset * 10d) / 10d;
+			game[i][5]=Double.toString((Double.parseDouble(game[i][5])+(rating_offset))); 
+		}
 		
 		return game;
 	}
@@ -259,7 +270,7 @@ public class Sdg {
 
 				}
 				sa.ShuffleArray(name_rating_tmp);
-				//sa.balanceoffdef(name_rating_tmp,players_per_team);
+				sa.balanceoffdef(name_rating_tmp,players_per_team);
 				double sumA=0;
 				double sumB=0;	
 
@@ -270,7 +281,7 @@ public class Sdg {
 				
 				game=sa.splitTeam(name_rating_tmp,players_per_team,odd);
 				
-				game=sa.gaussianRating(game);
+				//game=sa.gaussianRating(game,players_per_team);
 				//game[player_offet][1]
 
 				//fill game

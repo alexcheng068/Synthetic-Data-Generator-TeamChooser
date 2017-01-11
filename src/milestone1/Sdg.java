@@ -62,7 +62,6 @@ public class Sdg {
 			shiftToMiddle(array_with_number,players_per_team);		
 		}
 
-
 		String[][] game= new String [players_per_team+1][6];
 		//game [0] name A, [1] def off ,[2] rating, [3] name B, [4] def off, [5] rating
 
@@ -93,12 +92,7 @@ public class Sdg {
 				game[pcount][2]=array_with_number[j][1];//rating
 				pcount++;
 			}
-
-
 		}
-
-
-
 		return game;
 	}
 
@@ -120,25 +114,69 @@ public class Sdg {
 					array[j][1] = temp1;
 					array[j][2] = temp2;
 				}
-
 			}
 		}
 		return array;
 	}
 
+	
 	private void shiftToMiddle(String[][] array, int players_per_team){//in case of odd number
 		for (int i=players_per_team; i<(players_per_team*2);i++){
 			array[i - 1][0]=array[i][0];
 			array[i - 1][1]=array[i][1];
 			array[i - 1][2]=array[i][2];
 		}
+	}
+	
+	private void balanceoffdef(String[][] name_rating_tmp,int players_per_team){
+//off and def balance
+		boolean offdefBalance=false;
+		String off="Off";
+		String def="Def";
+		while ( offdefBalance==false){
+			int offA=0, offB=0,defA=0,defB=0;
+			offdefBalance=true;
+			ShuffleArray(name_rating_tmp);
+			for (int countoff=0;countoff<players_per_team;countoff++){				
+				if(off.equals(name_rating_tmp[countoff][2]))
+					offA++;
+				else if (def.equals(name_rating_tmp[countoff][2]))
+					defA++;
+			}
+			if (Math.abs(offA-defA)>1)
+				offdefBalance=false;
+			for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
+				if(off.equals(name_rating_tmp[countoff][2]))
+					offB++;
+				else if (def.equals(name_rating_tmp[countoff][2]))
+					defB++;
+			}
+			if (Math.abs(offB-defB)>1){
 
+				offdefBalance=false;
+			}
+			System.out.println("off diff B " +offB+" def B " +defB);
+			System.out.println("off diff A " +offA+" def A " +defA);
 
+		}
+		
 	}
 
-
-
-
+	private String[][] gaussianRating(String [][] game){ 
+	
+	/*				
+	int rating_offset=rand.nextInt(3)+1;
+	System.out.println("rating_offset is "+ rating_offset);
+	int player_offet=rand.nextInt(players_per_team);
+	System.out.println("player_offet is "+ player_offet);
+	System.out.println("name_rating_tmp[player_offet][1] 11"+ name_rating_tmp[player_offet][1]);
+	//name_rating_tmp[player_offet][1]=Integer.toString((Integer.parseInt(name_rating_tmp[player_offet][1])-(rating_offset)));
+	System.out.println("name_rating_tmp[player_offet][1] 22"+ name_rating_tmp[player_offet][1]);
+	*/
+		
+		
+		return game;
+	}
 	public static void main(String[] args) {
 		String csvFile = "rating_list.csv";
 		BufferedReader br = null;
@@ -197,9 +235,8 @@ public class Sdg {
 			//fill game	
 			for (int k=0;k<num_of_game;k++){//each game
 				System.out.println("game num is "+(k+1));
-				boolean offdefBalance=false;
-				String off="Off";
-				String def="Def";
+				
+
 
 
 				//generate set game instance per set of play
@@ -207,39 +244,7 @@ public class Sdg {
 					//generate number of players for each game	
 					//Min + (int)(Math.random() * ((Max - Min) + 1))
 					players_per_team=rand.nextInt((max_players_per_team-min_players_per_team)+1)+min_players_per_team;
-					String[][] splitarray= new String[players_per_team][3];
-
-					//off and def balance
-
-					//					while ( offdefBalance==false){
-					//						int offA=0, offB=0,defA=0,defB=0;
-					//						offdefBalance=true;
-					//						sa.ShuffleArray(name_rating_tmp);
-					//						for (int countoff=0;countoff<players_per_team;countoff++){				
-					//							if(off.equals(name_rating_tmp[countoff][2]))
-					//								offA++;
-					//							else if (def.equals(name_rating_tmp[countoff][2]))
-					//								defA++;
-					//						}
-					//						if (Math.abs(offA-defA)>1)
-					//							offdefBalance=false;
-					//						for (int countoff=players_per_team;countoff<players_per_team*2;countoff++){				
-					//							if(off.equals(name_rating_tmp[countoff][2]))
-					//								offB++;
-					//							else if (def.equals(name_rating_tmp[countoff][2]))
-					//								defB++;
-					//						}
-					//						if (Math.abs(offB-defB)>1){
-					//
-					//							offdefBalance=false;
-					//						}
-					//						System.out.println("off diff B " +offB+" def B " +defB);
-					//						System.out.println("off diff A " +offA+" def A " +defA);
-					//
-					//					}
-
-
-
+					
 					//decide whether odd numbers of players
 					//probability is 0.25 
 					odd=false;
@@ -252,19 +257,21 @@ public class Sdg {
 					}
 
 
-
-
-
 				}
 				sa.ShuffleArray(name_rating_tmp);
+				//sa.balanceoffdef(name_rating_tmp,players_per_team);
 				double sumA=0;
 				double sumB=0;	
 
 				System.out.println("player per team"+players_per_team);
 				String[][] game= new String [players_per_team+1][6];//players_per_team+1 th row is score
 
+				
+				
 				game=sa.splitTeam(name_rating_tmp,players_per_team,odd);
-
+				
+				game=sa.gaussianRating(game);
+				//game[player_offet][1]
 
 				//fill game
 				System.out.println("odd is "+odd);
@@ -288,8 +295,7 @@ public class Sdg {
 //
 //				}
 				
-				
-				
+
 				
 				
 				
@@ -410,7 +416,7 @@ public class Sdg {
 			//close the writer
 			writer.close();
 			writerDB.close();
-
+			
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

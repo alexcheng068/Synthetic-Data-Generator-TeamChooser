@@ -175,13 +175,13 @@ public class Sdg {
 	*/
 		//team A
 		for (int i=0;i<players_per_team;i++){	
-			double rating_offset=rand.nextGaussian()*1.281552;//80% will be within -1 to 1
+			double rating_offset=rand.nextGaussian()/1.281552;//80% will be within -1 to 1
 			rating_offset=(double)Math.round(rating_offset * 10d) / 10d;
 			game[i][2]=Double.toString((Double.parseDouble(game[i][2])+(rating_offset))); 
 		}
 		//team B
 		for (int i=0;i<players_per_team;i++){	
-			double rating_offset=rand.nextGaussian()*1.281552;//80% will be within -1 to 1
+			double rating_offset=rand.nextGaussian()/1.281552;//80% will be within -1 to 1
 			rating_offset=(double)Math.round(rating_offset * 10d) / 10d;
 			game[i][5]=Double.toString((Double.parseDouble(game[i][5])+(rating_offset))); 
 		}
@@ -270,7 +270,7 @@ public class Sdg {
 
 				}
 				sa.ShuffleArray(name_rating_tmp);
-				sa.balanceoffdef(name_rating_tmp,players_per_team);
+				//sa.balanceoffdef(name_rating_tmp,players_per_team);
 				double sumA=0;
 				double sumB=0;	
 
@@ -281,31 +281,12 @@ public class Sdg {
 				
 				game=sa.splitTeam(name_rating_tmp,players_per_team,odd);
 				
-				//game=sa.gaussianRating(game,players_per_team);
-				//game[player_offet][1]
+				game=sa.gaussianRating(game,players_per_team);
+		
 
 				//fill game
 				System.out.println("odd is "+odd);
-//				for (int p_count=0;p_count<players_per_team;p_count++){
-//					game[p_count][0]=name_rating_tmp[p_count][0];//name
-//					game[p_count][1]=name_rating_tmp[p_count][2];//off def
-//					game[p_count][2]=name_rating_tmp[p_count][1];//rating
-//
-//					if(p_count==players_per_team-1 && odd==true){
-//						game[p_count][3]="";
-//						game[p_count][4]="";
-//						game[p_count][5]="";
-//					}
-//					else{
-//						game[p_count][3]=name_rating_tmp[p_count+players_per_team][0];
-//						game[p_count][4]=name_rating_tmp[p_count+players_per_team][2];
-//						game[p_count][5]=name_rating_tmp[p_count+players_per_team][1];	
-//						sumB=sumB+ Double.parseDouble(game[p_count][5]);
-//					}
-//					sumA=sumA+ Double.parseDouble(game[p_count][2]);
-//
-//				}
-				
+
 
 				
 				
@@ -445,6 +426,27 @@ public class Sdg {
 
 	}
 }
+
+
+//for (int p_count=0;p_count<players_per_team;p_count++){
+//game[p_count][0]=name_rating_tmp[p_count][0];//name
+//game[p_count][1]=name_rating_tmp[p_count][2];//off def
+//game[p_count][2]=name_rating_tmp[p_count][1];//rating
+//
+//if(p_count==players_per_team-1 && odd==true){
+//	game[p_count][3]="";
+//	game[p_count][4]="";
+//	game[p_count][5]="";
+//}
+//else{
+//	game[p_count][3]=name_rating_tmp[p_count+players_per_team][0];
+//	game[p_count][4]=name_rating_tmp[p_count+players_per_team][2];
+//	game[p_count][5]=name_rating_tmp[p_count+players_per_team][1];	
+//	sumB=sumB+ Double.parseDouble(game[p_count][5]);
+//}
+//sumA=sumA+ Double.parseDouble(game[p_count][2]);
+//
+//}
 
 
 
